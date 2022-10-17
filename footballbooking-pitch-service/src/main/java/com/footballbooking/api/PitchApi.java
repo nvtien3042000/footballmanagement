@@ -7,8 +7,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,6 +22,7 @@ import com.footballbooking.service.PitchService;
 import com.footballbooking.util.ResponseUtil;
 
 @RestController
+@CrossOrigin
 public class PitchApi {
 	
 	@Autowired
@@ -56,6 +59,11 @@ public class PitchApi {
 		}
 		
 		return new ResponseEntity<Map<String, Object>> (result, HttpStatus.OK);
+	}
+	
+	@PostMapping("/add")
+	public String add () {
+		return "ok";
 	}
 	
 }
