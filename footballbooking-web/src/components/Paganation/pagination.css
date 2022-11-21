@@ -3,6 +3,18 @@
     justify-content: flex-end;
 }
 
-.pagination-right{
+.pagination-right {
+    margin-right: 20px;
+}
+
+.pagination-left {
     margin-left: 20px;
+}
+
+.color-defaul {
+    /* background-color: #31763a; */
+}
+
+.color-defaul::before {
+    background: #06f826 !important;
 }

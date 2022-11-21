@@ -84,6 +84,7 @@ public class BookingResponse {
 		ArrayNode result = mapper.createArrayNode();
 		for (Booking booking : waitingBooking) {
 			ObjectNode waitingBookingNode = mapper.createObjectNode();
+			waitingBookingNode.set("bookingId", mapper.convertValue(booking.getBookingId(), JsonNode.class));
 			waitingBookingNode.set("message", mapper.convertValue(booking.getMessage(), JsonNode.class));
 			waitingBookingNode.set("hourStart", mapper.convertValue(DateUtil.convertLocalTimeToString(booking.getHourStart(), "HH:mm"), JsonNode.class));
 			waitingBookingNode.set("hourEnd", mapper.convertValue(DateUtil.convertLocalTimeToString(booking.getHourEnd(), "HH:mm"), JsonNode.class));
@@ -106,12 +107,12 @@ public class BookingResponse {
 		ArrayNode result = mapper.createArrayNode();
 		for (Booking booking : bookings) {
 			List<BookingStatus> bookingStatuses = booking.getBookingStatuses();
-			boolean isCanceled = bookingStatuses.stream()
-							.map(BookingStatus::getStatus)
-							.anyMatch(status -> status.getStatusName().equals(StatusConst.STATUS_CANCELLED) || status.getStatusName().equals(StatusConst.STATUS_REJECTED));
-			if (isCanceled) {
-				continue;
-			}
+//			boolean isCanceled = bookingStatuses.stream()
+//							.map(BookingStatus::getStatus)
+//							.anyMatch(status -> status.getStatusName().equals(StatusConst.STATUS_CANCELLED) || status.getStatusName().equals(StatusConst.STATUS_REJECTED));
+//			if (isCanceled) {
+//				continue;
+//			}
 			for (BookingStatus bookingStatus : bookingStatuses) {
 				ObjectNode bookingNode = mapper.createObjectNode();
 				String bookingDateStr = DateUtil.convertLocalDateToString(booking.getBookingDate(), "dd/MM/yyyy");

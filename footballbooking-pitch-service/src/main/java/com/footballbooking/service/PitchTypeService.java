@@ -17,4 +17,9 @@ public class PitchTypeService {
 	public List<PitchType> getAll() {
 		return pitchTypeDao.getAll();
 	}
+	
+	public PitchType getById (Integer pitchTypeId) {
+		return pitchTypeDao.getById(pitchTypeId);
+	}
+	
 }

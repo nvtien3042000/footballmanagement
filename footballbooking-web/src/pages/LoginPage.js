@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import Login from '../components/Login/Login';
-import userApi from '../api/userApi';
-import axios from 'axios';
-import queryString, { stringify } from 'query-string';
-import { useNavigate } from 'react-router-dom';
-import AlertNotification from '../components/AlertNotification/AlertNotification';
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import Login from "../components/Login/Login";
+import userApi from "../api/userApi";
+import axios from "axios";
+import queryString, { stringify } from "query-string";
+import { useNavigate } from "react-router-dom";
+import AlertNotification from "../components/AlertNotification/AlertNotification";
 
-LoginPage.propTypes = {
-
-};
+LoginPage.propTypes = {};
 
 function LoginPage(props) {
 
@@ -22,6 +20,7 @@ function LoginPage(props) {
             ...inputV
         })
         const checkLogin = async () => {
+            console.log(JSON.stringify(inputV) + "v")
             if (JSON.stringify(inputV) != "{}") {
                 const response = await userApi.checkLogin(inputV);
                 if (response.data?.isAuthen === true) {
@@ -30,24 +29,26 @@ function LoginPage(props) {
                     localStorage.setItem('fullname', response.data.fullName)
                     localStorage.setItem('infor', JSON.stringify(response.data));
                     setCheck(true)
-                    navigate('/')
-                } else {
-                    console.log("ERROR")
-                    setCheck(false)
+                    if (response.data.role === "ROLE_CUSTOMER") {
+                        navigate('/');
+                    } else if (response.data.role === "ROLE_PITCHOWNER") {
+                        navigate('/pitchowner/booking');
+                    } else if (response.data.role === "ROLE_ADMIN") {
+                        navigate('/list-user');
+                    } else {
+                        console.log("ERROR")
+                        setCheck(false)
+                    }
                 }
-            } else {
-                setCheck(false)
             }
-
         }
         checkLogin()
-    }
 
+    }
     return (
         <div>
             <Login check={check} onClickLogin={handleClickLogin} />
         </div>
-
     );
 }
 

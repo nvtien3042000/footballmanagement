@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.footballbooking.entity.Pitch;
@@ -14,12 +15,15 @@ import com.footballbooking.entity.PitchDetail;
 @Repository
 public class PitchDao extends EntityDao<Pitch> {
 	
+	@Autowired
+	private AddressDao addressDao;
+	
 	public List<Pitch> getAll(){
 		return super.getAll(Pitch.class);
 	}
 	
 	public List<Pitch> getByCondition (Integer page, Integer limit, String searhByNameOrAddress, Integer pitchTypeId, Integer costMin, Integer costMax){
-		String sql = "SELECT * FROM pitch WHERE name LIKE :searhByNameOrAddress";
+		String sql = "SELECT * FROM pitch WHERE name LIKE :searhByNameOrAddress AND status = '1'";
 		Session session = openSession();
 		NativeQuery<Pitch> query = session.createNativeQuery(sql, Pitch.class);
 		searhByNameOrAddress = searhByNameOrAddress == null ? "" : searhByNameOrAddress;
@@ -72,5 +76,17 @@ public class PitchDao extends EntityDao<Pitch> {
 		NativeQuery<Pitch> query = openSession().createNativeQuery(sql, Pitch.class)
 										.setParameter("userId", userId);
 		return query.getResultList();
+	}
+	
+	public void insert (Pitch pitch) {
+		addressDao.insert(pitch.getAddress());
+		super.insert(pitch);
+	}
+	
+	public void disableStatus (Integer pitchId) {
+		String sql = "UPDATE pitch SET status = 0 WHERE pitch_id = :pitchId";
+		NativeQuery<Pitch> query = getCurrentSession().createNativeQuery(sql, Pitch.class);
+		query.setParameter("pitchId", pitchId);
+		query.executeUpdate();
 	}
 }

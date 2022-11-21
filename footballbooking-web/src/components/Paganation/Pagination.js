@@ -12,7 +12,7 @@ Pagination.defaultProps = {
 };
 
 function Pagination(props) {
-    const { onClickPagination } = props
+    const { pageTotal, currentPage, onClickPagination } = props
     function handleClickPage(type) {
         if (onClickPagination) {
             onClickPagination(type)
@@ -22,11 +22,42 @@ function Pagination(props) {
     }
     return (
         <div className='pagination'>
-            <button className="button button--skoll pagination-left" onClick={() => handleClickPage('pre')}>
+            {console.log(currentPage + " - " + pageTotal)}
+            <button className="button button--skoll pagination-left pagination-right" onClick={() => handleClickPage('pre')}>
                 <span className='glyphicon glyphicon-arrow-left'>
                 </span>
             </button>
-            <button className="button button--skoll pagination-right" onClick={() => handleClickPage('next')}>
+            {(currentPage == pageTotal && currentPage - 2 > 0) ?
+                <button className="button button--skoll">
+                    <span className='glyphicon'>{currentPage - 2}
+                    </span>
+                </button>
+                : ""}
+            {(currentPage - 1) > 0 ?
+                <button className="button button--skoll">
+                    <span className='glyphicon'>{currentPage - 1}
+                    </span>
+                </button>
+                : ""}
+            <button className="button button--skoll color-defaul">
+                <span className='glyphicon'>{currentPage}
+                </span>
+            </button>
+            {(currentPage + 1) <= pageTotal ?
+                <button className="button button--skoll">
+                    <span className='glyphicon'>{currentPage + 1}
+                    </span>
+                </button>
+                : ""
+            }
+            {(currentPage == 1 && currentPage + 2 <= pageTotal) ?
+                <button className="button button--skoll">
+                    <span className='glyphicon'>{currentPage + 2}
+                    </span>
+                </button>
+                : ""}
+
+            <button className="button button--skoll pagination-left" onClick={() => handleClickPage('next')}>
                 <span className='glyphicon glyphicon-arrow-right'>
                 </span>
             </button>

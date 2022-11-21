@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import './bookingDetail.css'
 import { Link } from 'react-router-dom';
 import pitchApi from '../../api/pitchApi';
+import Pagination from '../Paganation/Pagination';
+import UtilsPagination from '../../utils/UtilsPagination';
 
 BookingDetail.propTypes = {
 
@@ -12,6 +14,32 @@ function BookingDetail(props) {
 
     const [listBooking, setListBooking] = useState([])
     const [status, setStatus] = useState(true)
+    const [pageTotal, setPageTotal] = useState({})
+    const [filter, setFilter] = useState({
+        page: 1,
+        limit: 5
+    });
+    const [currentListBooking, setCurrentListBooking] = useState([])
+
+    function handleClickPagination(type) {
+        const filterNew = filter
+        let page = filter.page
+        if (type === 'next') {
+            if (currentListBooking.length === filter.limit) {
+                page = page + 1
+            }
+        } else {
+            if (filter.page !== 1) {
+                page = filter.page - 1
+            }
+        }
+        console.log(page + "---")
+        setFilter({
+            ...filterNew,
+            page
+        })
+        setCurrentListBooking(listBooking.slice((page - 1) * 5, page * 5))
+    }
 
     const handleOnClickDeletePitch = async (bookingId) => {
         const response = await pitchApi.cancelBooking(bookingId)
@@ -28,8 +56,13 @@ function BookingDetail(props) {
     useEffect(() => {
         const bookingInfor = async () => {
             const response = await pitchApi.bookingInfor()
-            setListBooking(response.data.sort((a, b) => a.time - b.time))
-            console.log(response.data.sort((a, b) => a.time - b.time))
+            const bookingAccept = response.data.filter(e => e.status !== 'Chờ xác nhận').map(e => e.bookingId)
+            console.log(bookingAccept + "+++")
+            const newBooking = response.data.filter(e => (bookingAccept.includes(e.bookingId) && e.status !== 'Chờ xác nhận') || !bookingAccept.includes(e.bookingId))
+            newBooking.reverse()
+            setListBooking(newBooking)
+            setCurrentListBooking(newBooking.slice(0, 5))
+            setPageTotal(UtilsPagination.getPageTotalCondition(newBooking.length, 5))
         }
         bookingInfor();
         console.log("bookingInfor")
@@ -52,13 +85,13 @@ function BookingDetail(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {listBooking?.map((e, index) => (
+                        {currentListBooking?.map((e, index) => (
                             <tr key={index}>
-                                <td>{e.pitchName}</td>
-                                <td>{e.time}</td>
-                                <td>{e.pitchTypeName}</td>
-                                <td>{e.cost}VNĐ</td>
-                                <td><span className={(e.status === 'Chờ xác nhận') ? 'warning' : (e.status === 'Đã hủy') ? 'cancel' : 'accept'}>{e.status}</span></td>
+                                <td className='item-booking'>{e.pitchName}</td>
+                                <td className='item-booking'>{e.time}</td>
+                                <td className='item-booking'>{e.pitchTypeName}</td>
+                                <td className='item-booking'>{e.cost}VNĐ</td>
+                                <td className='item-booking'><span className={(e.status === 'Chờ xác nhận') ? 'warning' : (e.status === 'Đã hủy') ? 'cancel' : (e.status === 'Từ chối yêu cầu') ? 'exit' : 'accept'}>{e.status}</span></td>
                                 <td>
                                     <button className={(e.status === 'Chờ xác nhận') ? 'btn btn-large btn-block btn-danger' : 'btn btn-large btn-block btn-danger disabled'} data-toggle="modal" data-target={`#exampleModalDetail${e.bookingId}`} >
                                         <span>Hủy</span>
@@ -90,6 +123,8 @@ function BookingDetail(props) {
                         ))}
                     </tbody>
                 </table>
+                <Pagination pageTotal={pageTotal} currentPage={filter.page} onClickPagination={handleClickPagination} />
+
 
             </div>
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import Search from '../Search/Search';
 import './listUser.css'
 import Pagination from '../Paganation/Pagination';
 import adminApi from '../../api/adminApi';
+import UtilsPaginations from '../../utils/UtilsPagination'
 
 ListUser.propTypes = {
 
@@ -13,10 +13,12 @@ function ListUser(props) {
 
     const [filter, setFilter] = useState({
         page: 1,
-        limit: 4,
+        limit: 5,
         searchByNameOrPhone: "",
         roleId: 1,
     })
+
+    const [pageTotal, setPageTotal] = useState({})
 
     const [checkLock, setCheckLock] = useState(true)
 
@@ -36,7 +38,7 @@ function ListUser(props) {
         const filterNew = filter
         let page = filter.page
         if (type === 'next') {
-            if (users.length === filter.limit) {
+            if (users.length === filter.limit && page < pageTotal) {
                 page = page + 1
             }
         } else {
@@ -76,13 +78,13 @@ function ListUser(props) {
             const response = await adminApi.getListUsers(filter);
             setUsers(response.data.users)
             console.log(response.data.users)
+            setPageTotal(UtilsPaginations.getPageTotalCondition(response.usersTotal, filter.limit))
         }
-        console.log(filter)
         fetchUserssList();
     }, [filter, checkLock])
 
     return (
-        <div className='main-container'>
+        <div className='main-container mb-20'>
             <div className="container mf-30 p-0" >
 
                 <div class="row">
@@ -117,12 +119,12 @@ function ListUser(props) {
                             {
                                 users.map((user) => (
                                     <tr key={user.userId}>
-                                        <td>{user.fullname}</td>
-                                        <td>{user.phone}</td>
-                                        <td>{user.email}</td>
-                                        <td>Quảng Nam</td>
-                                        <th className='center'><span className={(user.status) ? 'accept' : 'cancel'}>{(user.status) ? 'Mở' : 'Đã khóa'}</span></th>
-                                        <td>
+                                        <td className='center line-44'>{user.fullname}</td>
+                                        <td className='center line-44'>{user.phone}</td>
+                                        <td className='center line-44'>{user.email}</td>
+                                        <td className='center line-44'>Quảng Nam</td>
+                                        <th className='center line-44'><span className={(user.status) ? 'accept' : 'cancel'}>{(user.status) ? 'Mở' : 'Đã khóa'}</span></th>
+                                        <td className='center'>
                                             {
                                                 (user.status) ? <button type="button" class="btn btn-warning" data-toggle="modal" data-target={`#modelLockUnLock${user.userId}`}>Khóa</button>
                                                     : <button type="button" class="btn btn-warning" data-toggle="modal" data-target={`#modelLockUnLock${user.userId}`}>Mở khóa</button>
@@ -157,7 +159,7 @@ function ListUser(props) {
                         </tbody>
                     </table>
                 </div>
-                <Pagination onClickPagination={handleClickPagination} />
+                <Pagination pageTotal={pageTotal} currentPage={filter.page} onClickPagination={handleClickPagination} />
             </div>
         </div>
     );

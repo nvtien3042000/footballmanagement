@@ -6,6 +6,7 @@ import Search from '../components/Search/Search';
 import { Route, Routes } from 'react-router-dom';
 import Pagination from '../components/Paganation/Pagination';
 import Sidebar from '../components/Sidebar/Sidebar';
+import UtilsPaginations from '../utils/UtilsPagination'
 
 Home.propTypes = {
     // pitchs: PropTypes.array,
@@ -28,6 +29,7 @@ function Home(props) {
         page: 1,
         limit: 3
     });
+    const [pageTotal, setPageTotal] = useState({})
 
     function handleFilterSubmit(formValues) {
         const filterNew = filter
@@ -69,7 +71,8 @@ function Home(props) {
         const filterNew = filter
         let page = filter.page
         if (type === 'next') {
-            if (pitchs.length === filter.limit) {
+            if (pitchs.length === filter.limit && page < pageTotal
+            ) {
                 page = page + 1
             }
         } else {
@@ -88,6 +91,7 @@ function Home(props) {
         const fetchPitchsList = async () => {
             const response = await pitchApi.getAll(filter);
             setPitchs(response.data)
+            setPageTotal(UtilsPaginations.getPageTotal(response.itemTotal))
         }
         fetchPitchsList();
     }, [filter])
@@ -99,7 +103,7 @@ function Home(props) {
                 {pitchs.map(p => (
                     <Card key={p.pitchId} pitch={p} onPitchClick={handlePitchClick} />
                 ))}
-                <Pagination onClickPagination={handleClickPagination} />
+                <Pagination pageTotal={pageTotal} currentPage={filter.page} onClickPagination={handleClickPagination} />
             </div>
         </div>
     );

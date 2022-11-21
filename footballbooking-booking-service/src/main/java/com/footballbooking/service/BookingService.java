@@ -44,8 +44,8 @@ public class BookingService {
 		bookingDao.insert(booking);
 	}
 	
-	public List<Booking> getWaitingBooking (List<Integer> miniPitchIds){
-		return bookingDao.getWaitingBooking(miniPitchIds);
+	public List<Booking> getWaitingBooking (List<Integer> miniPitchIds, Integer status){
+		return bookingDao.getWaitingBooking(miniPitchIds, status);
 	}
 	
 	public List<Booking> getByUserId (Integer userId) {

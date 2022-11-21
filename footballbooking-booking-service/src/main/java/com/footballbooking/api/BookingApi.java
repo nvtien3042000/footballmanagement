@@ -135,7 +135,7 @@ public class BookingApi {
 	}
 	
 	@GetMapping("/getRequestBookingList")
-	public ResponseEntity<?> getRequestBookingList (){
+	public ResponseEntity<?> getRequestBookingList (@RequestParam(name = "status") Integer status){
 		String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -146,7 +146,7 @@ public class BookingApi {
 			ArrayNode miniPitchIdData = (ArrayNode) restTemplateUtil.postObjectNode(env.getProperty("PITCH_SERVICE_GET_MINIPITCH_BY_USER_ID"), request);
 			List<Integer> miniPitchId = new ArrayList<>();
 			miniPitchIdData.forEach(jsonNode -> miniPitchId.add(jsonNode.asInt()));
-			List<Booking> waitingBooking = bookingService.getWaitingBooking(miniPitchId);
+			List<Booking> waitingBooking = bookingService.getWaitingBooking(miniPitchId, status);
 			ArrayNode waitingBookingData = bookingResponse.waitingBooking(waitingBooking);
 			result = ResponseUtil.createResponse(true, waitingBookingData, "");
 		} catch (JsonProcessingException e) {

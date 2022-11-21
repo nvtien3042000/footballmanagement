@@ -3,10 +3,13 @@ package com.footballbooking.dao;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.comparator.Comparators;
 
 import com.footballbooking.entity.Booking;
 import com.footballbooking.entity.BookingStatus;
@@ -40,17 +43,25 @@ public class BookingDao extends EntityDao<Booking>{
 		super.insert(booking);
 	}
 	
-	public List<Booking> getWaitingBooking (List<Integer> miniPitchIds){
+	public List<Booking> getWaitingBooking (List<Integer> miniPitchIds, Integer status){
 		String sql = "SELECT * FROM booking WHERE minipitch_id IN (:miniPitchIds)";
 		NativeQuery<Booking> query = openSession().createNativeQuery(sql, Booking.class)
 						.setParameterList("miniPitchIds", miniPitchIds);
 		List<Booking> bookings = query.getResultList();
+//		bookings.sort(Comparator.comparing(b->((BookingStatus) b.getBookingStatuses().get(0)).getCreateAt()));
 		List<Booking> result = new ArrayList<Booking>();
 		for (Booking booking : bookings) {
 			List<BookingStatus> bookingStatuses = booking.getBookingStatuses();
-			if (bookingStatuses.size() == 1 && bookingStatuses.get(0).getStatus().getStatusName().equals("Chờ xác nhận")) {
-				result.add(booking);
+			if(status == 1) {
+				if (bookingStatuses.size() == 1 && bookingStatuses.get(0).getStatus().getStatusId() == status) {
+					result.add(booking);
+				}
+			} else {
+				if (bookingStatuses.size() > 1 && bookingStatuses.get(bookingStatuses.size()-1).getStatus().getStatusId() == status) {
+					result.add(booking);
+				}
 			}
+			
 		}
 		return result;
 	}

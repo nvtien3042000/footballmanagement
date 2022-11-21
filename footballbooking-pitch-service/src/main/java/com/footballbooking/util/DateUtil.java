@@ -17,6 +17,9 @@ public class DateUtil {
 	}
 	
 	public static LocalTime convertStringToLocalTime(String time, String pattern) {
+		if(time.length()==5) {
+			time += ":00";
+		}
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 		return LocalTime.parse(time, formatter);
 	}

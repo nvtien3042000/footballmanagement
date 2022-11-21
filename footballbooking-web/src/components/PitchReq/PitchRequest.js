@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-// import "bootstrap/dist/css/bootstrap.min.css";
-import { Table } from "react-bootstrap";
+import { Pagination, Table } from "react-bootstrap";
 import "../PitchReq/pitchrequest.css";
+import axiosClientPost from "../../api/axiosClientPost";
+import { useNavigate } from "react-router-dom";
+import '../PitchReq/pitchrequest.css';
 
 const Container = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: auto;
   background: linear-gradient(
       rgba(255, 255, 255, -0.4),
       rgba(255, 255, 255, -0.4)
@@ -16,7 +18,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding-bottom:20px;
 `;
 
 const Title = styled.h1`
@@ -28,6 +30,7 @@ const Wrapper = styled.div`
   padding: 20px;
   background-color: white;
   border-radius: 10px;
+  min-height: 450px;
 `;
 
 const Menu = styled.span`
@@ -37,37 +40,95 @@ const Menu = styled.span`
   padding-bottom: 20px;
 `;
 
-const Tbody = styled.tbody`
-  background-color: #F7F5F2;
-`
-
-const Accept = styled.button`
-  background-color: rgb(54,131,64);
-  color: white;
-  border-radius: 5px;
-  padding: 5px;
-`
-
-const Deny = styled.button`
-  background-color: #FF6363;
-  color: white;
-  border-radius: 5px;
-  padding: 5px 15px 5px 15px;
-  /* padding-right: 15px; */
-  /* padding-left: 15px; */
-`
 
 const PitchRequest = () => {
+  const navigate = useNavigate();
+  const [listRequest, setListRequest] = useState([]);
+  const [status, setStatus] = useState(1);
+  const requestList = async () => {
+    var data = new FormData();
+    // data.append("status", 1)
+    var config = {
+      url: "/bookingservice/getRequestBookingList?status=" + status,
+      method: "GET",
+      data,
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        ...data.getHeaders,
+      },
+    };
+
+    axiosClientPost(config)
+      .then((response) => {
+        setListRequest(response.data.reverse());
+      })
+      .catch(() => {
+        navigate("/login");
+      });
+  };
+  useEffect(() => {
+    requestList();
+  }, [status]);
+  const acceptRequest = (bookingId) => {
+    var data = new FormData();
+    data.append("bookingId", bookingId);
+    var config = {
+      url: "/bookingservice/acceptBookingRequest",
+      method: "POST",
+      data,
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        ...data.getHeaders,
+      },
+    };
+
+    axiosClientPost(config)
+      .then(() => {
+        requestList();
+      })
+      .catch(() => {
+      });
+  }
+
+  const denyRequest = (bookingId) => {
+    var data = new FormData();
+    data.append("bookingId", bookingId);
+    var config = {
+      url: "/bookingservice/rejectBookingRequest",
+      method: "POST",
+      data,
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        ...data.getHeaders,
+      },
+    };
+
+    axiosClientPost(config)
+      .then(() => {
+        requestList();
+      })
+      .catch(() => {
+      });
+  }
+
+  function handleChangeStatus(e) {
+    setStatus(e.target.value)
+  }
+
   return (
     <div>
       <Container>
-        <Title style={{ marginBottom: "100px" }}>XỬ LÝ ĐẶT SÂN</Title>
+        <Title style={{ marginBottom: "10px", marginTop: "80px" }}>XỬ LÝ ĐẶT SÂN</Title>
         <Wrapper>
-          <Menu >
-            <a style={{ marginRight: "30px" }}>Yêu cầu đặt sân</a>
-            <a>Danh sách sân</a>
-          </Menu>
-          <Table className="list" >
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 positon-right">
+            <select className='select' value={status} onChange={handleChangeStatus}>
+              <option value="1">Chờ xác nhận</option>
+              <option value="2">Đã xác nhận</option>
+              <option value="3">Đã hủy</option>
+              <option value="4">Từ chối yêu cầu</option>
+            </select>
+          </div>
+          <Table className="list">
             <thead>
               <tr>
                 <th>#</th>
@@ -76,38 +137,38 @@ const PitchRequest = () => {
                 <th>Người đặt</th>
                 <th>Thời gian</th>
                 <th>Nội dung</th>
-                <th>Tác vụ</th>
+                {(status == 1) ?
+                  <th>Tác vụ</th>
+                  : ""
+                }
               </tr>
             </thead>
-            <Tbody>
-              <tr>
-                <td>1</td>
-                <td>Sân chuyên việt</td>
-                <td>Loại sân: 5 <br /> Sân số: 1</td>
-                <td>Trọn bùi</td>
-                <td>17:00 - 18:00 ngày 28/04/2022</td>
-                <td>xin slot</td>
-                <td>
-                  <Accept style={{ marginRight: "10px" }}>Chấp nhận</Accept>
-                  <Deny>Từ chối</Deny>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Sân chuyên việt</td>
-                <td>Loại sân: 5 <br /> Sân số: 1</td>
-                <td>Trọn bùi</td>
-                <td>17:00 - 18:00 ngày 28/04/2022</td>
-                <td>xin slot</td>
-                <td>
-                  <Accept style={{ marginRight: "10px" }}>Chấp nhận</Accept>
-                  <Deny>Từ chối</Deny>
-                </td>
-              </tr>
-            </Tbody>
+            <tbody>
+              {listRequest.map((request, index) => {
+                return (
+                  <tr>
+                    <td>{index}</td>
+                    <td>{request?.miniPitch?.pitchName}</td>
+                    <td>
+                      {`Loại sân:${request?.miniPitch?.pitchType}`}  <br /> {`Sân số: ${request.miniPitch.miniPitchName}`}
+                    </td>
+                    <td>{request?.bookingUser?.fullname}</td>
+                    <td>{request?.hourStart} - {request?.hourEnd} ngày {request?.bookingDate}</td>
+                    <td>{request?.message}</td>
+                    {(status == 1) ?
+                      <td>
+                        <button onClick={() => acceptRequest(request?.bookingId)} className="btn btn-success mr-30">Chấp nhận</button>
+                        <button onClick={() => denyRequest(request?.bookingId)} className="btn btn-danger">Từ chối</button>
+                      </td>
+                      : ""}
+                  </tr>
+                );
+              })}
+            </tbody>
           </Table>
         </Wrapper>
       </Container>
+      <Pagination />
     </div>
   );
 };
