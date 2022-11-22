@@ -50,11 +50,14 @@ function CardDetail(props) {
         console.log(document.getElementById(id).innerHTML)
     }
 
-    function handleFreeTimeSlot(pitchId, pitchTypeId, bookingDate) {
+    function handleFreeTimeSlot(pitchId, pitchTypeId, bookingDate, timeStart, timeEnd, pitchDetailId) {
         setParamesFilter({
             pitchId,
             pitchTypeId,
-            bookingDate
+            bookingDate,
+            timeStart,
+            timeEnd,
+            pitchDetailId
         })
     }
 
@@ -80,7 +83,7 @@ function CardDetail(props) {
         fetchFreeTimeSlot();
     }, [miniPitchId])
 
-    function handleOnClickDetail(idType, cost, pitchId, pitchName) {
+    function handleOnClickDetail(idType, cost, pitchId, pitchName, timeStart, timeEnd, pitchDetailId) {
         let pitch = idType
         let status = hidden.status
         if (hidden.pitch === pitch && hidden.cost === cost) {
@@ -98,7 +101,7 @@ function CardDetail(props) {
         let date = d.getFullYear() + "/" + ((parseInt((d.getMonth()) + 1) < 10) ? `0${(d.getMonth()) + 1
             }` : ((d.getMonth()) + 1)) + "/" + ((parseInt((d.getDate())) < 10) ? `0${(d.getDate())
                 }` : ((d.getDate())))
-        handleFreeTimeSlot(pitchId, idType, date)
+        handleFreeTimeSlot(pitchId, idType, date, timeStart, timeEnd, pitchDetailId)
         setPitchName(pitchName)
         setMiniPitchId(miniPitchId)
         const bookingCur = booking
@@ -231,7 +234,7 @@ function CardDetail(props) {
                                                         <span>
                                                             <span className='price mr-30'>{t.cost}VNĐ</span>
                                                             <button className='button-detail button1'
-                                                                onClick={() => handleOnClickDetail(p.pitchTypeId, t.cost, pitchDetail.pitchId, p.pitchTypeName)}>
+                                                                onClick={() => handleOnClickDetail(p.pitchTypeId, t.cost, pitchDetail.pitchId, p.pitchTypeName, t.timeStart, t.timeEnd, t.pitchDetailId)}>
                                                                 <span>Chi tiết đặt sân</span>
                                                             </button>
                                                         </span>

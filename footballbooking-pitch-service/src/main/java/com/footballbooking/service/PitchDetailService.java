@@ -18,7 +18,7 @@ public class PitchDetailService {
 		return pitchDetailDao.getById(pitchDetailId);
 	}
 	
-	public List<PitchDetail> getByPitchIdAndPitchTypeIdAndDayOfWeek (Integer pitchId, Integer pitchTypeId, int bookingDayOfWeek) {
-		return pitchDetailDao.getByPitchIdAndPitchTypeIdAndDayOfWeek(pitchId, pitchTypeId, bookingDayOfWeek);
+	public List<PitchDetail> getByPitchIdAndPitchTypeIdAndDayOfWeek (Integer pitchId, Integer pitchTypeId, int bookingDayOfWeek, String timeStart, String timeEnd, String pitchDetailId) {
+		return pitchDetailDao.getByPitchIdAndPitchTypeIdAndDayOfWeek(pitchId, pitchTypeId, bookingDayOfWeek, timeStart, timeEnd, pitchDetailId);
 	}
 }

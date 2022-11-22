@@ -69,6 +69,7 @@ public class PitchResponse {
 			for (PitchDetail pitchDetail : pitchDetails) {
 				if (pitchDetail.getPitchType().getPitchTypeId().equals(pitchType.getPitchTypeId())) {
 					ObjectNode timeSlotNode = mapper.createObjectNode();
+					timeSlotNode.set("pitchDetailId", mapper.convertValue(pitchDetail.getPitchDetailId(), JsonNode.class));
 					timeSlotNode.set("dayOfWeekStart",
 							mapper.convertValue(pitchDetail.getDayOfWeekStart(), JsonNode.class));
 					timeSlotNode.set("dayOfWeekEnd",

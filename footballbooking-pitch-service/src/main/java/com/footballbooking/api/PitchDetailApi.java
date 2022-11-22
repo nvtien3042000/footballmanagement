@@ -33,14 +33,17 @@ public class PitchDetailApi {
 	@PostMapping(path = "/infoPitchDetail")
 	public ResponseEntity<?> getInfoPitchDetail (@RequestParam(name = "pitchTypeId") String pitchTypeId,
 					@RequestParam(name = "pitchId") String pitchId,
-					@RequestParam(name = "bookingDate") String bookingDate){
+					@RequestParam(name = "bookingDate") String bookingDate,
+					@RequestParam(name = "timeStart") String timeStart,
+					@RequestParam(name = "timeEnd") String timeEnd,
+					@RequestParam(name = "pitchDetailId") String pitchDetailId){
 		int pitchIdInt = Integer.parseInt(pitchId);
 		int pitchTypeIdInt = Integer.parseInt(pitchTypeId);
 		LocalDate bookingDateLocalDate = DateUtil.convertStringToLocalDate(bookingDate, "yyyy/MM/dd");
 		int bookingDayOfWeek = bookingDateLocalDate.getDayOfWeek().getValue();
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			List<PitchDetail> pitchDetails = pitchDetailService.getByPitchIdAndPitchTypeIdAndDayOfWeek(pitchIdInt, pitchTypeIdInt, bookingDayOfWeek);
+			List<PitchDetail> pitchDetails = pitchDetailService.getByPitchIdAndPitchTypeIdAndDayOfWeek(pitchIdInt, pitchTypeIdInt, bookingDayOfWeek, timeStart, timeEnd, pitchDetailId);
 			JsonNode pitchData = pitchDetailResponse.responsePitchDetailList(pitchDetails);
 			result = ResponseUtil.createResponse(true, pitchData,"");
 		} catch (Exception e) {

@@ -23,7 +23,7 @@ public class BookingDao extends EntityDao<Booking>{
 	}
 	
 	public List<Booking> getBookingByBookingDataAndHour (LocalDate bookingDate, LocalTime timeSlot) {
-		String sql = "SELECT * FROM booking WHERE booking_date = :bookingDate AND hour_start <= CAST(:timeSlot AS time) AND hour_end > CAST(:timeSlot AS time)";
+		String sql = "SELECT B.* FROM booking B INNER JOIN booking_status S ON B.booking_id = S.booking_id WHERE booking_date = :bookingDate AND hour_start <= CAST(:timeSlot AS time) AND hour_end > CAST(:timeSlot AS time) GROUP BY B.booking_id HAVING SUM(status_id) <= 3";
 		NativeQuery<Booking> query = openSession().createNativeQuery(sql, Booking.class)
 							.setParameter("bookingDate", DateUtil.convertLocalDateToString(bookingDate, "yyyy-MM-dd"))
 							.setParameter("timeSlot", DateUtil.convertLocalTimeToString(timeSlot, "HH:mm:ss"));

@@ -65,7 +65,10 @@ public class BookingApi {
 
 	@GetMapping("/getFreeTimeSlot")
 	public ResponseEntity<?> getFreeTimeSlot(@RequestParam(name = "bookingDate") String bookingDate,
-			@RequestParam(name = "pitchId") String pitchId, @RequestParam(name = "pitchTypeId") String pitchTypeId) {
+			@RequestParam(name = "pitchId") String pitchId, @RequestParam(name = "pitchTypeId") String pitchTypeId,
+			@RequestParam(name = "timeStart") String timeStart,
+			@RequestParam(name = "timeEnd") String timeEnd,
+			@RequestParam(name = "pitchDetailId") String pitchDetailId) {
 
 		LocalDate bookingDateLocalDate = DateUtil.convertStringToLocalDate(bookingDate, "yyyy/MM/dd");
 
@@ -74,6 +77,9 @@ public class BookingApi {
 		formData.add("bookingDate", bookingDate);
 		formData.add("pitchTypeId", pitchTypeId);
 		formData.add("pitchId", pitchId);
+		formData.add("timeStart", timeStart);
+		formData.add("timeEnd", timeEnd);
+		formData.add("pitchDetailId", pitchDetailId);
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 
 		Map<String, Object> result = new HashMap<String, Object>();

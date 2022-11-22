@@ -82,7 +82,7 @@ public class MiniPitchApi {
 			@RequestParam(name ="bookingDate") String bookingDateStr,
 			@RequestParam(name ="hourStart") String hourStartStr){
 		LocalDate bookingDate = DateUtil.convertStringToLocalDate(bookingDateStr, "yyyy/MM/dd");
-		LocalTime hourStart = DateUtil.convertStringToLocalTime(hourStartStr, "HH:mm");
+		LocalTime hourStart = DateUtil.convertStringToLocalTime(hourStartStr, "HH:mm:ss");
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			MiniPitch miniPitch = miniPitchService.getById(miniPitchId);
