@@ -116,10 +116,13 @@ function CardDetail(props) {
         setOrderTime(time)
         setMiniPitchId(miniPitchId)
         const bookingCur = booking
+        console.log("=aaaa=")
+        console.log(paramesFilter)
         setBooking({
             ...bookingCur,
             "hourStart": time,
-            "miniPitchId": miniPitchId[0]
+            "miniPitchId": miniPitchId[0],
+            bookingDate: paramesFilter.bookingDate
         })
     }
 
@@ -253,7 +256,7 @@ function CardDetail(props) {
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 card-image">
                             <div className=''>
                                 {console.log(pitchDetail.coverAvatar)}
-                                <img className='card-image-link' src='https://giaydabonghana.com/wp-content/uploads/2020/08/Giai-bong-phui-la-gi.jpg' />
+                                <img className='card-image-link' src={pitchDetail.coverAvatarLink} />
                             </div>
                             <div>
                                 <h1>{pitchDetail.name}</h1>

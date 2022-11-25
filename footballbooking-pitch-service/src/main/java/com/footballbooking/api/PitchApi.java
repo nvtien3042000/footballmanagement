@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import com.footballbooking.service.AddressService;
 import com.footballbooking.service.PitchService;
 import com.footballbooking.service.PitchTypeService;
 import com.footballbooking.util.DateUtil;
+import com.footballbooking.util.FirebaseUtil;
 import com.footballbooking.util.ResponseUtil;
 
 @RestController
@@ -45,6 +47,9 @@ public class PitchApi {
 	
 	@Autowired
 	private AddressService addressService;
+	
+	@Autowired
+	private FirebaseUtil firebaseUtil;
 	
 	@GetMapping("/pitchs")
 	public ResponseEntity<?> pitchs (@RequestParam(name = "page", required = false) Integer page,
@@ -119,6 +124,10 @@ public class PitchApi {
 		pitch.setOwnerId(ownerId);
 		pitch.setName(pitchName);
 		pitch.setDescription(description);
+		String[] imageList = {"1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"};
+		int randomImage = new Random().nextInt(4);
+		pitch.setCoverAvatar(imageList[randomImage]);
+		pitch.setCoverAvatarLink(firebaseUtil.getFileUrl(imageList[randomImage]));
 		Address address = new Address();
 		address.setCity(city);
 		address.setCommune(commune);

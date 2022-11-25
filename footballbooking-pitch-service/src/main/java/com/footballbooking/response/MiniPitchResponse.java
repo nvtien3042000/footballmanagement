@@ -40,6 +40,7 @@ public class MiniPitchResponse {
 					      && p.getDayOfWeekEnd() >= (dayOfWeek)
 					      && !p.getTimeStart().isAfter(hourStart)
 					      && !p.getTimeEnd().isBefore(hourStart)
+					      && p.getPitchType().getPitchTypeId().equals(miniPitch.getPitchType().getPitchTypeId())
 					      ).collect(Collectors.toList()).get(0);
 	    result.set("cost", mapper.convertValue(pitchDetail.getCost(), JsonNode.class ));
 		return result;
