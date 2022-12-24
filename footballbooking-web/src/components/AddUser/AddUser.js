@@ -131,9 +131,9 @@ function AddUser(props) {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-sm-3 control-label">Mật khẩu</label>
+                                <label htmlFor="name" className="col-sm-3 control-label">Nhập lại mật khẩu</label>
                                 <div className="col-sm-9">
-                                    <input type="password" className="form-control" name="passwordAgain" id="passwordAgain" placeholder="Mật khẩu"
+                                    <input type="password" className="form-control" name="passwordAgain" id="passwordAgain" placeholder="Nhập lại mật khẩu"
                                         value={passwordAgain}
                                         onChange={handleChangePasswordAgain}
                                     />

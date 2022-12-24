@@ -96,8 +96,6 @@ function Login(props) {
                     <Input placeholder="password" name="password" type={"password"} onChange={handleOnChange} value={input.password} />
                     {check ? "" : <span style={{ color: "red", textAlign: "left" }}>Sai tài khoản hoặc mật khẩu</span>}
                     <Button onClick={handleClickLogin}>LOGIN</Button>
-                    <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-                    <Link>CREATE A NEW ACCOUNT</Link>
                 </Form>
             </Wrapper>
         </Container>
