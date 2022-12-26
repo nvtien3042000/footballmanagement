@@ -136,7 +136,7 @@ const PitchRequest = () => {
                 <th>Vị trí</th>
                 <th>Người đặt</th>
                 <th>Thời gian</th>
-                <th>Nội dung</th>
+                <th>Số điện thoại</th>
                 {(status == 1) ?
                   <th>Tác vụ</th>
                   : ""

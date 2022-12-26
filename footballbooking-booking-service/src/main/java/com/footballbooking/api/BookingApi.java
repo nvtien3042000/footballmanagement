@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.footballbooking.constant.Constant;
@@ -101,7 +102,7 @@ public class BookingApi {
 					@RequestParam(name = "bookingDate") String bookingDateStr,
 					@RequestParam(name = "miniPitchId") Integer miniPitchId,
 					@RequestParam(name = "message", required = false) String message
-					) {
+					) throws JsonMappingException, JsonProcessingException {
 		String userIdStr = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Integer userId = Integer.parseInt(userIdStr);
 		LocalTime hourStart = DateUtil.convertStringToLocalTime(hourStartStr, "HH:mm");
@@ -113,6 +114,13 @@ public class BookingApi {
 		booking.setBookingDate(bookingDate);
 		booking.setMiniPitchId(miniPitchId);
 		booking.setUserId(userId);
+		String userServiceGetUserById = env.getProperty("USER_SERVICE_GET_USER_BY_ID");
+		userServiceGetUserById += booking.getUserId();
+		JsonNode userData = restTemplateUtil.getObjectNode(userServiceGetUserById, null);
+		message = userData.get("phone").toString();
+		if(message.length() == 12) {
+			message = message.substring(1, 11);
+		}
 		if (message != null) {
 			booking.setMessage(message);
 		}
